@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import API from '../services/api';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -21,53 +21,83 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await API.post(
-        '/auth/login',
-        formData
-      );
+      const response = await API.post("/auth/login", formData);
 
-      localStorage.setItem(
-        'token',
-        res.data.token
-      );
+      // Save token
+      localStorage.setItem("token", response.data.token);
 
-      alert('Login Successful');
+      alert("Login Successful");
 
-      navigate('/');
+      // Redirect to Home Page
+      navigate("/home");
+
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response?.data?.message || "Login Failed");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div
+      style={{
+        width: "400px",
+        margin: "50px auto",
+        padding: "30px",
+        border: "1px solid #ccc",
+        borderRadius: "10px",
+        boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+      }}
+    >
+      <h1 style={{ textAlign: "center" }}>Login</h1>
 
       <form onSubmit={handleSubmit}>
         <input
-          type='email'
-          name='email'
-          placeholder='Enter Email'
+          type="email"
+          name="email"
+          placeholder="Enter Email"
+          value={formData.email}
           onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+          }}
         />
-
-        <br />
-        <br />
 
         <input
-          type='password'
-          name='password'
-          placeholder='Enter Password'
+          type="password"
+          name="password"
+          placeholder="Enter Password"
+          value={formData.password}
           onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+          }}
         />
 
-        <br />
-        <br />
-
-        <button type='submit'>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#2563eb",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
           Login
         </button>
       </form>
+
+      <p style={{ marginTop: "15px", textAlign: "center" }}>
+        Don't have an account?{" "}
+        <Link to="/register">Register</Link>
+      </p>
     </div>
   );
 }
