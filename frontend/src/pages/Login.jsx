@@ -1,34 +1,26 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await API.post("/auth/login", formData);
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
-      // Save token
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", res.data.token);
 
       alert("Login Successful");
 
-      // Redirect to Home Page
       navigate("/home");
 
     } catch (error) {
@@ -39,42 +31,48 @@ function Login() {
   return (
     <div
       style={{
-        width: "400px",
-        margin: "50px auto",
-        padding: "30px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        background: "#f4f4f4",
       }}
     >
-      <h1 style={{ textAlign: "center" }}>Login</h1>
+      <form
+        onSubmit={handleLogin}
+        style={{
+          background: "white",
+          padding: "30px",
+          borderRadius: "10px",
+          width: "350px",
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>Login</h1>
 
-      <form onSubmit={handleSubmit}>
         <input
           type="email"
-          name="email"
           placeholder="Enter Email"
-          value={formData.email}
-          onChange={handleChange}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
           style={{
             width: "100%",
             padding: "10px",
-            marginBottom: "15px",
+            marginTop: "15px",
           }}
         />
 
         <input
           type="password"
-          name="password"
           placeholder="Enter Password"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           style={{
             width: "100%",
             padding: "10px",
-            marginBottom: "15px",
+            marginTop: "15px",
           }}
         />
 
@@ -83,21 +81,20 @@ function Login() {
           style={{
             width: "100%",
             padding: "10px",
-            backgroundColor: "#2563eb",
+            marginTop: "20px",
+            background: "#007bff",
             color: "white",
             border: "none",
             borderRadius: "5px",
-            cursor: "pointer",
           }}
         >
           Login
         </button>
-      </form>
 
-      <p style={{ marginTop: "15px", textAlign: "center" }}>
-        Don't have an account?{" "}
-        <Link to="/register">Register</Link>
-      </p>
+        <p style={{ marginTop: "15px", textAlign: "center" }}>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
+      </form>
     </div>
   );
 }
