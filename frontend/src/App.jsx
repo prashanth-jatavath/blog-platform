@@ -16,30 +16,24 @@ function App() {
         {/* Default Route */}
         <Route
           path="/"
-          element={
-            token ? <Navigate to="/home" /> : <Navigate to="/register" />
-          }
+          element={token ? <Navigate to="/home" /> : <Navigate to="/login" />}
         />
 
-        {/* Register */}
+        {/* Auth Routes */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Login */}
-        <Route path="/login" element={<Login />} />
-
-        {/* Home */}
+        {/* Protected Routes */}
         <Route
           path="/home"
           element={token ? <Home /> : <Navigate to="/login" />}
         />
 
-        {/* Create Post */}
         <Route
           path="/create"
           element={token ? <CreatePost /> : <Navigate to="/login" />}
         />
 
-        {/* Post Details */}
         <Route
           path="/post/:id"
           element={token ? <PostDetails /> : <Navigate to="/login" />}
